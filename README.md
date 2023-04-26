@@ -8,3 +8,7 @@ Currently, working with the following extensions. All remaining files are moved 
 * Documents: .txt, .ppt, .pptx, .ods, .xls, .xlsx, .pdf, .odt, .html, .htm, .doc, .docx, .pps, .odp, .xlsm
 * Software: .exe, .apk, .bat, .bin, .jar, .msi
 * Archives: .7z, .arj, .deb, .pkg, .rar, .rpm, .tar.gz, .z, .zip
+
+TODO:
+- Add a way to check for duplicate file names.
+- Avoid the hardcoded extensions.
