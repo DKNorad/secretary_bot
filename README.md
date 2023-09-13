@@ -1,7 +1,7 @@
 # Secretary Bot
 A simple script that sorts all the files in a folder into separate folders based on filename extension
 
-Changelog:
+Changelog:\
 2023-Sep-14: Completely reworked the script as it was not working properly under Linux.
 Improved the code and used pathlib for all the work with the files.
 
