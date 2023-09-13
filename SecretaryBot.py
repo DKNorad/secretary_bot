@@ -17,12 +17,12 @@ folders = {'Images': image, 'Video': video, 'Audio': audio, 'Documents': documen
            'Archives': archives, "Text": text, "Fonts": font, 'Miscellaneous': ['.*']}
 
 
-def sizeof_fmt(num, suffix="B"):
-    for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
-        if abs(num) < 1024.0:
-            return f"{num:3.1f}{unit}{suffix}"
-        num /= 1024.0
-    return f"{num:.3f}Yi{suffix}"
+def human_readable_size(size, decimal_places=3):
+    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
+        if size < 1024.0 or unit == 'PiB':
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
 
 
 curr_dir = Path(__file__).resolve().parent
@@ -49,8 +49,8 @@ for folder_name, file_ext in folders.items():
                           f"{datetime.fromtimestamp(target_file.stat().st_ctime).strftime('%Y-%b-%d %H:%M:%S')}: {target_file}\n"
                           f"{datetime.fromtimestamp(file.stat().st_ctime).strftime('%Y-%b-%d %H:%M:%S')}: {file}\n")
                     print(f"File size:\n"
-                          f"{sizeof_fmt(target_file.stat().st_size)}: {target_file}\n"
-                          f"{sizeof_fmt(file.stat().st_size)}: {file}\n")
+                          f"{human_readable_size(target_file.stat().st_size)}: {target_file}\n"
+                          f"{human_readable_size(file.stat().st_size)}: {file}\n")
                     while True:
                         answer = input("Do you want to overwrite the file? (Yes/No): ").lower()
                         if answer in ["yes", "y"]:
