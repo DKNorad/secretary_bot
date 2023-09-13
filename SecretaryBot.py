@@ -16,16 +16,26 @@ archives = ['.7z', '.arj', '.deb', '.pkg', '.rar', '.rpm', '.tar.gz', '.z', '.zi
 folders = {'Images': image, 'Video': video, 'Audio': audio, 'Documents': document, 'Software': software,
            'Archives': archives, "Text": text, "Fonts": font, 'Miscellaneous': ['.*']}
 
+
+def sizeof_fmt(num, suffix="B"):
+    for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.3f}Yi{suffix}"
+
+
 curr_dir = Path(__file__).resolve().parent
-
-file_exists = []
-
+checked_files = []
 total_moved = 0
 for folder_name, file_ext in folders.items():
     target_path = curr_dir.joinpath(folder_name)
     for ext in file_ext:
         for file in Path(curr_dir).glob("*" + ext):
             if Path.is_file(file) and file != PurePath(__file__):
+                if folder_name == "Miscellaneous":
+                    if file in checked_files:
+                        continue
                 is_moved = False
                 if not Path(folder_name).is_dir():
                     Path(Path.joinpath(curr_dir, folder_name)).mkdir(parents=True, exist_ok=True)
@@ -38,6 +48,9 @@ for folder_name, file_ext in folders.items():
                     print(f"Last modified:\n"
                           f"{datetime.fromtimestamp(target_file.stat().st_ctime).strftime('%Y-%b-%d %H:%M:%S')}: {target_file}\n"
                           f"{datetime.fromtimestamp(file.stat().st_ctime).strftime('%Y-%b-%d %H:%M:%S')}: {file}\n")
+                    print(f"File size:\n"
+                          f"{sizeof_fmt(target_file.stat().st_size)}: {target_file}\n"
+                          f"{sizeof_fmt(file.stat().st_size)}: {file}\n")
                     while True:
                         answer = input("Do you want to overwrite the file? (Yes/No): ").lower()
                         if answer in ["yes", "y"]:
@@ -48,8 +61,9 @@ for folder_name, file_ext in folders.items():
                             break
                         else:
                             print("Invalid input. Please enter 'Yes' or 'No'.")
+                checked_files.append(file)
                 if is_moved:
-                    print(f'{file} ------------------> {target_path}')
+                    print(f'{target_path} <------ {file}')
                     total_moved += 1
 
 print(f'\nTotal files moved: {total_moved}')
